@@ -31,4 +31,21 @@ public interface IUserService {
      * @return
      */
     ServerResponse<String> checkValid(String str,String type);
+
+    /**
+     * 查询问题
+     *
+     * @param username
+     * @return
+     */
+    ServerResponse selectQuestion(String username);
+
+    /**
+     * 查询答案
+     * @param username
+     * @param question
+     * @param answer
+     * @return
+     */
+    ServerResponse<String> checkAnswer(String username, String question, String answer);
 }

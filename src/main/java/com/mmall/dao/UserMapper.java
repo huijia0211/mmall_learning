@@ -26,5 +26,29 @@ public interface UserMapper {
      */
     int checkEmail(String email);
 
+    /**
+     * 登陆
+     *
+     * @param username
+     * @param password
+     * @return
+     */
     User selectLogin(@Param("username") String username, @Param("password") String password);
+
+    /**
+     * 查询问题
+     *
+     * @param username
+     * @return
+     */
+    String selectQuestionByUsername(String username);
+
+    /**
+     * 查询答案
+     * @param username
+     * @param question
+     * @param answer
+     * @return
+     */
+    int checkAnswer(@Param("username") String username, @Param("question") String question, @Param("answer") String answer);
 }

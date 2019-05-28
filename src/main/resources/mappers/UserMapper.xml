@@ -42,6 +42,16 @@
     where username = #{username} and password = #{password}
   </select>
 
+  <select id="selectQuestionByUsername" resultType="java.lang.String">
+      select qusetion from mmall_user where username = #{username}
+  </select>
+  <select id="checkAnswer" resultType="java.lang.Integer">
+      select count(1)
+      from mmall_user
+      where username = #{username}
+      and question = #{qusetion}
+      and answer = #{answer}
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_user
