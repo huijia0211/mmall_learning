@@ -16,6 +16,12 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
 
+    /**
+     * 检查用户名
+     *
+     * @param username
+     * @return
+     */
     int checkUsername(String username);
 
     /**
@@ -45,10 +51,36 @@ public interface UserMapper {
 
     /**
      * 查询答案
+     *
      * @param username
      * @param question
      * @param answer
      * @return
      */
     int checkAnswer(@Param("username") String username, @Param("question") String question, @Param("answer") String answer);
+
+    /**
+     * 重置密码
+     *
+     * @param username
+     * @param passwordNew
+     * @return
+     */
+    int updatePasswordByUsername(@Param("username") String username, @Param("passwordNew") String passwordNew);
+
+    /**
+     * 修改密码
+     * @param password
+     * @param userId
+     * @return
+     */
+    int checkPassword(@Param("password") String password, @Param("userId") Integer userId);
+
+    /**
+     * 根据id判断email是否存在
+     * @param email
+     * @param userId
+     * @return
+     */
+    int checkEmailByUserId(@Param("email") String email, @Param("userId") Integer userId);
 }

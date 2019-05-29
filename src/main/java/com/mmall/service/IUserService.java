@@ -3,6 +3,8 @@ package com.mmall.service;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 
+import javax.servlet.http.HttpSession;
+
 /**
  *
  */
@@ -15,6 +17,7 @@ public interface IUserService {
      * @return
      */
     ServerResponse<User> login(String username, String password);
+
     /**
      * 注册
      *
@@ -30,7 +33,7 @@ public interface IUserService {
      * @param type
      * @return
      */
-    ServerResponse<String> checkValid(String str,String type);
+    ServerResponse<String> checkValid(String str, String type);
 
     /**
      * 查询问题
@@ -38,7 +41,7 @@ public interface IUserService {
      * @param username
      * @return
      */
-    ServerResponse selectQuestion(String username);
+    ServerResponse<String> selectQuestion(String username);
 
     /**
      * 查询答案
@@ -48,4 +51,29 @@ public interface IUserService {
      * @return
      */
     ServerResponse<String> checkAnswer(String username, String question, String answer);
+
+    /**
+     * 重置密码
+     * @param username
+     * @param passwordNew
+     * @param forgetToken
+     * @return
+     */
+    ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken);
+
+    /**
+     * 修改密码
+     * @param passwordOld
+     * @param passwordNew
+     * @param user
+     * @return
+     */
+    ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user);
+
+    /**
+     * 更新信息
+     * @param user
+     * @return
+     */
+    ServerResponse<User> updateInfomation(User user);
 }
