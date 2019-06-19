@@ -200,11 +200,20 @@ public class UserServiceImpl implements IUserService {
         updateUser.setQuestion(user.getQuestion());
         updateUser.setAnswer(user.getAnswer());
         int updateCount = this.userMapper.updateByPrimaryKeySelective(updateUser);
-        if (updateCount > 0){
-            return ServerResponse.createBySuccess("更新个人信息成功",updateUser);
+        if (updateCount > 0) {
+            return ServerResponse.createBySuccess("更新个人信息成功", updateUser);
         }
         return ServerResponse.createByErrorMessage("更新个人信息失败");
     }
 
+    @Override
+    public ServerResponse<User> getInformation(Integer userId) {
+        User user = this.userMapper.selectByPrimaryKey(userId);
+        if (user == null) {
+            return ServerResponse.createByErrorMessage("找不到当前用户");
+        }
+        user.setPassword(StringUtils.EMPTY);
+        return ServerResponse.createBySuccess(user);
+    }
 
 }
