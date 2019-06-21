@@ -160,10 +160,10 @@ public class UserServiceImpl implements IUserService {
             //影响函数大于0则告知前端修改成功
             if (rowCount > 0) {
                 return ServerResponse.createBySuccessMessage("修改密码成功");
-            } else {
-                //不相等返回错误
-                return ServerResponse.createByErrorMessage("token错误，请重新获取重置密码的token");
             }
+        } else {
+            //不相等返回错误
+            return ServerResponse.createByErrorMessage("token错误，请重新获取重置密码的token");
         }
         //流程走完没修改告知前端失败
         return ServerResponse.createByErrorMessage("修改密码失败");
