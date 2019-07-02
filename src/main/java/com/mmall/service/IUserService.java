@@ -3,8 +3,6 @@ package com.mmall.service;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 
-import javax.servlet.http.HttpSession;
-
 /**
  *
  */
@@ -83,4 +81,11 @@ public interface IUserService {
      * @return
      */
     ServerResponse<User> getInformation(Integer userId);
+
+    /**
+     * 检查用户是否是管理员
+     * @param user
+     * @return
+     */
+    ServerResponse checkAdminRole(User user);
 }
