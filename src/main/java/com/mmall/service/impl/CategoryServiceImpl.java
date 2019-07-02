@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements ICategoryService {
         category.setStatus(true);
         int rowCount = this.categoryMapper.insert(category);
         if (rowCount > 0) {
-            ServerResponse.createBySuccess("添加品类成功");
+            return ServerResponse.createBySuccess("添加品类成功");
         }
         return ServerResponse.createByErrorMessage("添加品类失败");
     }
@@ -52,7 +52,7 @@ public class CategoryServiceImpl implements ICategoryService {
         category.setName(categoryName);
         int rowCount = this.categoryMapper.updateByPrimaryKeySelective(category);
         if (rowCount > 0) {
-            ServerResponse.createBySuccess("更新品类成功");
+            return ServerResponse.createBySuccess("更新品类成功");
         }
         return ServerResponse.createByErrorMessage("更新品类失败");
     }
