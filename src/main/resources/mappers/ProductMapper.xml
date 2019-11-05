@@ -172,7 +172,6 @@
       price = #{price,jdbcType=DECIMAL},
       stock = #{stock,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -194,6 +193,23 @@
             </if>
             <if test="productId != null">
                and id = #{productId}
+            </if>
+        </where>
+    </select>
+    <select id="selectByNameAndCategoryIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mmall_product
+        <where>
+            status = 1
+            <if test="productName != null and productName.trim() != ''">
+                and name like #{productName}
+            </if>
+            <if test="categoryIdList != null and categoryIdList.size()>0 ">
+                and category_id in
+                <foreach collection="categoryIdList" item="item" index="index" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
             </if>
         </where>
     </select>
