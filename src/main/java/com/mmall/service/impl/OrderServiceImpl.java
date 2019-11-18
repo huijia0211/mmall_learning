@@ -72,12 +72,17 @@ public class OrderServiceImpl implements IOrderService {
     public ServerResponse createOrder(Integer userId, Integer shippingId) {
         //从购物车中获取数据
         List<Cart> cartList = cartMapper.selectCheckedCartByUserId(userId);
+        //拼装成OrderItem
         ServerResponse serverResponse = this.getCartOrderItem(userId, cartList);
+        //有错误时直接返回
         if (!serverResponse.isSuccess()) {
             return serverResponse;
         }
+        //获取OrderItem
         List<OrderItem> orderItemList = (List<OrderItem>) serverResponse.getData();
+        //根据orderItemList获取总价
         BigDecimal payment = this.getOrderTotalPrice(orderItemList);
+        //组装成order，存进数据库
         Order order = this.assembleOrder(userId, shippingId, payment);
         if (order == null) {
             return ServerResponse.createBySuccessMessage("生成订单错误");
@@ -88,6 +93,7 @@ public class OrderServiceImpl implements IOrderService {
         for (OrderItem orderItem : orderItemList) {
             orderItem.setOrderNo(order.getOrderNo());
         }
+        //将orderItemList存进数据库
         orderItemMapper.batchInsert(orderItemList);
         //生成成功，减少库存
         this.reduceProductStock(orderItemList);
@@ -95,7 +101,7 @@ public class OrderServiceImpl implements IOrderService {
         this.cleanCart(cartList);
         //返回给前端
         OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
-        return ServerResponse.createBySuccess(order);
+        return ServerResponse.createBySuccess(orderVo);
     }
 
     private OrderVo assembleOrderVo(Order order, List<OrderItem> orderItemList) {
