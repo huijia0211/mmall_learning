@@ -9,6 +9,8 @@ import java.util.Map;
  */
 public interface IOrderService {
 
+    ServerResponse createOrder(Integer userId, Integer shippingId);
+
     ServerResponse pay(Long orderNo, Integer userId, String path);
 
     ServerResponse aliCallback(Map<String, String> params);

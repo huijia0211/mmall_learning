@@ -172,4 +172,13 @@
         where
             order_no = #{orderNo} and user_id = #{userId}
     </select>
+
+    <insert id="batchInsert">
+        insert into
+            mmall_order_item(<include refid="Base_Column_List"/>)
+        values
+            <foreach collection="orderItemList" item="item" index="index" separator=",">
+                (#{item.id}, #{item.userId}, #{item.orderNo}, #{item.productId}, #{item.productName}, #{item.productImage}, #{item.currentUnitPrice}, #{item.quantity}, #{item.totalPrice}, now(), now())
+            </foreach>
+    </insert>
 </mapper>
