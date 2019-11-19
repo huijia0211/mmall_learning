@@ -1,11 +1,13 @@
 package com.mmall.controller.backend;
 
+import com.github.pagehelper.PageInfo;
 import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
-import com.mmall.service.ICategoryService;
+import com.mmall.service.IOrderService;
 import com.mmall.service.IUserService;
+import com.mmall.vo.OrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,16 +20,19 @@ import javax.servlet.http.HttpSession;
  * @author Admin
  */
 @Controller
-@RequestMapping("/manage/category")
-public class CategoryManagerController {
+@RequestMapping("/manage/order")
+public class OrdermanageController {
+
     @Autowired
     private IUserService iUserService;
     @Autowired
-    private ICategoryService iCategoryService;
+    private IOrderService iOrderService;
 
-    @RequestMapping(value = "add_category.do")
+    @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId) {
+    public ServerResponse<PageInfo> orderList(HttpSession session,
+                                              @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                              @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆，请登录");
@@ -35,15 +40,15 @@ public class CategoryManagerController {
         //校验一下是否是管理员
         if (this.iUserService.checkAdminRole(user).isSuccess()) {
             //是管理员
-            return this.iCategoryService.addCategory(categoryName, parentId);
+            return this.iOrderService.manageList(pageNum, pageSize);
         } else {
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
     }
 
-    @RequestMapping(value = "set_category_name.do")
+    @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse setCategoryName(HttpSession session, Integer categoryId, String categoryName) {
+    public ServerResponse<OrderVo> orderDetail(HttpSession session, Long orderNo) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆，请登录");
@@ -51,15 +56,18 @@ public class CategoryManagerController {
         //校验一下是否是管理员
         if (this.iUserService.checkAdminRole(user).isSuccess()) {
             //是管理员
-            return this.iCategoryService.updateCategory(categoryId, categoryName);
+            return this.iOrderService.manageDetail(orderNo);
         } else {
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
     }
 
-    @RequestMapping(value = "get_category.do")
+    @RequestMapping("search.do")
     @ResponseBody
-    public ServerResponse getChildrenParallelCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
+    public ServerResponse<PageInfo> orderSearch(HttpSession session,
+                                                Long orderNo,
+                                                @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                                @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆，请登录");
@@ -67,16 +75,15 @@ public class CategoryManagerController {
         //校验一下是否是管理员
         if (this.iUserService.checkAdminRole(user).isSuccess()) {
             //是管理员
-            //查询子节点的category信息
-            return this.iCategoryService.getChildrenParallelCategory(categoryId);
+            return this.iOrderService.manageSearch(orderNo, pageNum, pageSize);
         } else {
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }
     }
 
-    @RequestMapping(value = "get_deep_category.do")
+    @RequestMapping("send_goods.do")
     @ResponseBody
-    public ServerResponse getCategoryAndDeepChildrenCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
+    public ServerResponse<String> orderSendGoods(HttpSession session, Long orderNo) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登陆，请登录");
@@ -84,7 +91,7 @@ public class CategoryManagerController {
         //校验一下是否是管理员
         if (this.iUserService.checkAdminRole(user).isSuccess()) {
             //是管理员
-            return this.iCategoryService.selectCategoryAndChildrenById(categoryId);
+            return this.iOrderService.manageSendGoods(orderNo);
         } else {
             return ServerResponse.createByErrorMessage("无权限操作，需要管理员权限");
         }

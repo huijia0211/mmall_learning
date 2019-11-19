@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,7 @@ public class OrderController {
 
     /**
      * 创建后跳转页面调用pay()
+     *
      * @param session
      * @param shippingId
      * @return
@@ -75,9 +77,29 @@ public class OrderController {
         return iOrderService.getOrderCartProduct(user.getId());
     }
 
+    @RequestMapping("detail.do")
+    @ResponseBody
+    public ServerResponse detail(HttpSession session, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.getOrderDetail(user.getId(), orderNo);
+    }
+
+    @RequestMapping("list.do")
+    @ResponseBody
+    public ServerResponse list(HttpSession session, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.getOrderList(user.getId(), pageNum, pageSize);
+    }
 
     /**
      * 生成订单后跳转页面调用，返回二维码
+     *
      * @param session
      * @param orderNo
      * @param request
@@ -96,6 +118,7 @@ public class OrderController {
 
     /**
      * alipay调用
+     *
      * @param request
      * @return
      */
@@ -136,6 +159,7 @@ public class OrderController {
 
     /**
      * 查询订单状态 轮询
+     *
      * @param session
      * @param orderNo
      * @return
