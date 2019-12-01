@@ -9,7 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
- * Created by geely
+ *
+ * @author Admin
  */
 @Slf4j
 public class PropertiesUtil {

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Admin
@@ -18,7 +19,7 @@ public class FtpUtil {
     private static String ftpUser = PropertiesUtil.getProperty("ftp.user");
     private static String ftpPass = PropertiesUtil.getProperty("ftp.pass");
 
-    public FtpUtil(String ip, int port, String user, String pwd) {
+    private FtpUtil(String ip, int port, String user, String pwd) {
         this.ip = ip;
         this.port = port;
         this.user = user;
@@ -52,7 +53,7 @@ public class FtpUtil {
                 log.error("上传文件异常", e);
                 uploaded = false;
             } finally {
-                fis.close();
+                Objects.requireNonNull(fis).close();
                 ftpClient.disconnect();
             }
         }
