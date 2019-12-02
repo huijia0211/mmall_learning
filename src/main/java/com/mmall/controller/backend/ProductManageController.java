@@ -27,7 +27,7 @@ import java.util.Map;
  * @author Admin
  */
 @Controller
-@RequestMapping("/manage/product")
+@RequestMapping("/manage/product/")
 public class ProductManageController {
 
     @Autowired

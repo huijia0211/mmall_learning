@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
  * @author Admin
  */
 @Controller
-@RequestMapping("/manage/order")
+@RequestMapping("/manage/order/")
 public class OrdermanageController {
 
     @Autowired

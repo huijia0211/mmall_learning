@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
  * @author Admin
  */
 @Controller
-@RequestMapping("/manage/category")
+@RequestMapping("/manage/category/")
 public class CategoryManageController {
     @Autowired
     private IUserService iUserService;
