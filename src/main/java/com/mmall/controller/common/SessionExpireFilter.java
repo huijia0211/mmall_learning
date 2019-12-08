@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * @author Admin
  */
-@WebFilter(urlPatterns = "*.do", filterName = "sessionExpireFilter")
+//@WebFilter(urlPatterns = "*.do", filterName = "sessionExpireFilter")
 public class SessionExpireFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
