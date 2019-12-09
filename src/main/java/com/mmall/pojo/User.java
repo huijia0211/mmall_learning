@@ -2,6 +2,7 @@ package com.mmall.pojo;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Setter
@@ -9,7 +10,9 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = 7074935802756432106L;
+
     private Integer id;
 
     private String username;
