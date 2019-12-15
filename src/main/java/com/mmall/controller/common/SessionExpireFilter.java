@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
+ * Cookie Redis分布式过滤器,更新session
+ *
  * @author Admin
  */
 @WebFilter(urlPatterns = "*.do", filterName = "sessionExpireFilter")
@@ -25,6 +27,7 @@ public class SessionExpireFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        //从请求中根据名称获取cookie
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotBlank(loginToken)) {
             //判断是否为空或者""
@@ -35,8 +38,6 @@ public class SessionExpireFilter implements Filter {
                 RedisShardedPoolUtil.expire(loginToken, Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
             }
         }
-        servletRequest.setCharacterEncoding("utf-8");
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 

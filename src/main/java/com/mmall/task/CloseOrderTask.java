@@ -33,7 +33,7 @@ public class CloseOrderTask {
         iOrderService.closeOrder(hour);
         log.info("关闭订单定时任务结束");
     }
-
+//    @Scheduled(cron = "0 */1 * * * ?")
     public void closeOrderTaskV2() {
         log.info("关闭订单定时任务启动");
         long lockTimeout = Long.parseLong(PropertiesUtil.getProperty("lock.timeout", "5000"));
@@ -82,6 +82,7 @@ public class CloseOrderTask {
         log.info("关闭订单定时任务结束");
     }
 
+//    @Scheduled(cron = "0 */1 * * * ?")
     public void closeOrderTaskV4() {
         RLock lock = redissonManager.getRedisson().getLock(Const.RedisLock.CLOSE_ORDER_TASK_LOCK);
         boolean getLock = false;
@@ -103,6 +104,7 @@ public class CloseOrderTask {
             }
         }
     }
+
     private void closeOrder(String lockName) {
         RedisShardedPoolUtil.expire(lockName, 50);
         log.info("获取{},ThreadName:{}", Const.RedisLock.CLOSE_ORDER_TASK_LOCK, Thread.currentThread().getName());
