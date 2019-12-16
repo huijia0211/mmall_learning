@@ -34,21 +34,13 @@ public class AuthorityInterceptor implements HandlerInterceptor {
         String methodName = handlerMethod.getMethod().getName();
         String className = handlerMethod.getBean().getClass().getSimpleName();
         //解析参数
-
-        StringBuffer requestParamBuffer = new StringBuffer();
-        Map paramMap = request.getParameterMap();
-        Iterator it = paramMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            String mapKey = (String) entry.getKey();
-            String mapValue = StringUtils.EMPTY;
-
-            Object obj = entry.getValue();
-            if (obj instanceof String[]) {
-                String[] strs = (String[]) obj;
-                mapValue = Arrays.toString(strs);
-            }
-            requestParamBuffer.append(mapKey).append("=").append(mapValue);
+        StringBuilder requestParamBuilder = new StringBuilder();
+        Map<String, String[]> paramMap = request.getParameterMap();
+        for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
+            String mapKey = entry.getKey();
+            String[] strs = entry.getValue();
+            String mapValue = Arrays.toString(strs);
+            requestParamBuilder.append(mapKey).append("=").append(mapValue);
         }
 
         if (StringUtils.equals(className, "UserManageController") && StringUtils.equals(methodName, "login")) {

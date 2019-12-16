@@ -27,7 +27,7 @@ public class SessionExpireFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        //从请求中根据名称获取cookie
+        //从请求中根据cookie名称获取sessionid
         String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         if (StringUtils.isNotBlank(loginToken)) {
             //判断是否为空或者""
@@ -35,6 +35,7 @@ public class SessionExpireFilter implements Filter {
             String userJsonStr = RedisShardedPoolUtil.get(loginToken);
             User user = JsonUtil.string2Obj(userJsonStr, User.class);
             if (user != null) {
+                //重新设置sessionid的过期时间
                 RedisShardedPoolUtil.expire(loginToken, Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
             }
         }
