@@ -2,11 +2,11 @@ package com.mmall.service.impl;
 
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
-import com.mmall.common.TokenCache;
 import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.util.MD5Util;
+import com.mmall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -126,7 +126,8 @@ public class UserServiceImpl implements IUserService {
             //使用UUID生成token
             String forgetToken = UUID.randomUUID().toString();
             //将token加入缓存，key为TokenCache.TOKEN_PREFIX
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
+//            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
+            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, 60*60*12);
             //将token返给前端
             return ServerResponse.createBySuccess(forgetToken);
         }
@@ -146,7 +147,8 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("用户不存在");
         }
         //根据key从缓存获取token
-        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+//        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX + username);
         //判断是否获取到token
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或者过期");
@@ -160,10 +162,10 @@ public class UserServiceImpl implements IUserService {
             //影响函数大于0则告知前端修改成功
             if (rowCount > 0) {
                 return ServerResponse.createBySuccessMessage("修改密码成功");
-            } else {
-                //不相等返回错误
-                return ServerResponse.createByErrorMessage("token错误，请重新获取重置密码的token");
             }
+        } else {
+            //不相等返回错误
+            return ServerResponse.createByErrorMessage("token错误，请重新获取重置密码的token");
         }
         //流程走完没修改告知前端失败
         return ServerResponse.createByErrorMessage("修改密码失败");
@@ -214,6 +216,14 @@ public class UserServiceImpl implements IUserService {
         }
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
+    }
+
+    @Override
+    public ServerResponse checkAdminRole(User user) {
+        if (user != null && Const.Role.ROLE_ADMIN == user.getRole().intValue()) {
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
     }
 
 }
